@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#174735">
+  <title>Sprout & Stone · Your neighborhood grocery</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="notice-band">Fresh from our shelves to your doorstep <span>✦</span> Local favorites, picked with care</div>
+
+  <section id="authScreen" class="auth-wrap">
+    <div class="auth-showcase">
+      <div class="auth-brand"><span class="logo-symbol">✳</span><span>sprout <b>&</b> stone</span></div>
+      <div class="auth-story">
+        <div class="small-overline">THE GOOD STUFF, EVERY DAY</div>
+        <h1>Life tastes<br>better <em>fresh.</em></h1>
+        <p>Thoughtful groceries, seasonal produce, and little everyday favorites. Everything you need, right around the corner.</p>
+      </div>
+      <div class="auth-art" aria-hidden="true">
+        <div class="auth-art-circle"></div>
+        <div class="art-bag">🛍️</div><span class="art-apple">🍎</span><span class="art-leafy">🥬</span><span class="art-bread">🥖</span>
+      </div>
+      <div class="auth-footer"><span>✿ Locally loved</span><span>⌁ Thoughtfully stocked</span><span>♡ Always fresh</span></div>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-form-wrap">
+        <div class="eyebrow">WELCOME BACK</div>
+        <h2>Good to see you.</h2>
+        <p class="muted">Sign in to see your orders, manage your basket and enjoy a simpler shopping day.</p>
+        <form id="loginForm" autocomplete="off">
+          <label for="loginEmail">Email address</label>
+          <input id="loginEmail" name="email" type="email" placeholder="you@example.com" required>
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" placeholder="Your password" required>
+          <button class="btn btn-primary auth-submit" type="submit">Sign in <span>→</span></button>
+          <div id="loginError" role="alert" class="form-error" hidden></div>
+        </form>
+        <div class="demo-divider"><span>DEMO ACCOUNTS</span></div>
+        <p class="small muted">Use any of these fictional accounts to explore the store.</p>
+        <div class="demo-accounts">
+          <button type="button" data-demo="customer-a"><span class="avatar av-orange">A</span><span>Alice <small>Customer A</small></span><span class="demo-arrow">↗</span></button>
+          <button type="button" data-demo="customer-b"><span class="avatar av-purple">B</span><span>Bob <small>Customer B</small></span><span class="demo-arrow">↗</span></button>
+          <button type="button" data-demo="owner"><span class="avatar av-green">M</span><span>Morgan <small>Shopkeeper</small></span><span class="demo-arrow">↗</span></button>
+        </div>
+        <p class="auth-note">Built with synthetic data for a local security-testing lab.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="appScreen" hidden>
+    <header class="site-header">
+      <div class="main-header">
+        <button id="brandHome" class="wordmark"><span class="logo-symbol">✳</span>sprout <b>&</b> stone</button>
+        <div class="header-middle"><span class="location-dot">●</span> Delivering to <strong>Indiranagar, Bengaluru</strong> <span class="chev">⌄</span></div>
+        <div class="header-actions">
+          <span id="headerUser" class="header-user"></span>
+          <button id="cartToggle" class="header-icon" title="Shopping basket"><span>🛒</span><span id="cartCount" class="count-bubble">0</span></button>
+          <button id="logoutBtn" class="btn btn-outline btn-small">Sign out</button>
+        </div>
+      </div>
+      <div class="nav-row"><nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-view="shop">Shop all</button>
+        <button class="nav-link" data-view="orders">My orders</button>
+        <button class="nav-link" data-view="address">My addresses</button>
+        <button class="nav-link owner-nav" data-view="admin" hidden>Shop management</button>
+      </nav><div class="nav-promo">✦ Fresh picks, fair prices, happy days</div></div>
+    </header>
+
+    <main>
+      <section id="shopView" class="page-view">
+        <div class="shop-hero"><div class="hero-text"><span class="hero-label">THE FRESH EDIT · THIS WEEK</span><h1>Fresh finds for<br><em>every little moment.</em></h1><p>Seasonal goodness and everyday staples. Handpicked for the little things that make a big difference.</p><a class="hero-link" href="#productSection">Explore the shelves <span>↗</span></a></div><div class="hero-art" aria-hidden="true"><div class="hero-orbit"></div><span class="hero-leaf">🌿</span><span class="hero-veg">🥑</span><span class="hero-fruit">🍋</span><span class="hero-red">🍓</span></div></div>
+        <div class="benefits"><span>🚲 <b>Neighbourhood delivery</b></span><span>🥬 <b>Picked for freshness</b></span><span>♡ <b>Made for everyday life</b></span></div>
+        <section id="productSection" class="section"><div class="section-top"><div><span class="section-overline">THE GOOD AISLE</span><h2>Shop our favorites</h2><p class="muted">A little of everything, all in one happy place.</p></div><label class="search-wrap"><span>⌕</span><input id="productSearch" aria-label="Search products" placeholder="Search the good stuff..."></label></div><div id="categoryFilters" class="category-row"></div><div id="productGrid" class="product-grid"></div></section>
+      </section>
+
+      <section id="ordersView" class="page-view section subpage" hidden><span class="section-overline">TRACK THE GOODNESS</span><h1>Your orders</h1><p class="muted">Every delivery, neatly in one place.</p><div id="ordersList" class="stack"></div></section>
+      <section id="addressView" class="page-view section subpage" hidden><span class="section-overline">DELIVERED YOUR WAY</span><h1>Saved addresses</h1><p class="muted">Keep your doorstep details up to date.</p><div id="addressList" class="stack"></div></section>
+      <section id="adminView" class="page-view section subpage" hidden><span class="section-overline">SHOPKEEPER'S CORNER</span><h1>Shop management</h1><p class="muted">A simple home for your shop details and inventory.</p><div class="admin-layout"><div class="admin-card"><div class="card-heading"><h3>Shop details</h3><span class="mini-pill">Owner</span></div><form id="settingsForm" class="settings-form"><label>Shop name<input id="setting-storeName" name="storeName" required></label><label>Owner's name<input id="setting-ownerName" name="ownerName" required></label><label>Contact email<input id="setting-supportEmail" name="supportEmail" type="email" required></label><label>Contact phone<input id="setting-supportPhone" name="supportPhone" required></label><label>Pickup note<input id="setting-pickupNote" name="pickupNote" required></label><button class="btn btn-primary" type="submit">Save shop details ↗</button></form></div><div class="admin-card"><div class="card-heading"><h3>Inventory</h3><span class="mini-pill">Live stock</span></div><div id="inventoryList"></div><button class="btn btn-outline reset-btn" id="resetLabBtn" type="button">Reset demo data</button><p class="small muted">Reset restores only the fictional data in this local demo.</p></div></div></section>
+    </main>
+    <footer class="site-footer"><div class="footer-brand">✳ sprout <b>&</b> stone</div><span>Good food, good company, good days.</span><span>© 2026 Sprout & Stone · Local demo</span></footer>
+  </div>
+
+  <div id="cartOverlay" class="drawer-backdrop" hidden></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Shopping basket" aria-hidden="true"><div class="cart-header"><div><span class="section-overline">A LITTLE SOMETHING GOOD</span><h2>Your basket</h2></div><button class="close-drawer" id="closeCart" aria-label="Close basket">×</button></div><div id="cartItems" class="cart-items"></div><div class="cart-foot"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div><p class="small muted">Delivery and taxes calculated at checkout.</p><button id="checkoutBtn" class="btn btn-primary checkout-btn">Place demo order →</button></div></aside>
+  <div id="modalBackdrop" class="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true"><button id="modalClose" class="close-drawer" aria-label="Close dialog">×</button><div id="modalContent"></div></section></div>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

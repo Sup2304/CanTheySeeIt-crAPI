@@ -1,0 +1,71 @@
+{
+  "suiteId": "sprout-lab-known-vulnerabilities-v1",
+  "title": "Sprout & Stone known synthetic order and settings defects",
+  "originalRequirement": "Customers must not read one another's private orders or edit shopkeeper-only settings.",
+  "targetProfileId": "sprout-stone-local-grocery-lab",
+  "confirmed": true,
+  "cases": [
+    {
+      "testId": "S01",
+      "actorRef": "customer-a",
+      "resourceRef": "order-a-1001",
+      "operationRef": "order.read",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "S02",
+      "actorRef": "customer-b",
+      "resourceRef": "order-b-1002",
+      "operationRef": "order.read",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "S03",
+      "actorRef": "customer-a",
+      "resourceRef": "order-b-1002",
+      "operationRef": "order.read",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": [
+        "S01",
+        "S02"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ]
+    },
+    {
+      "testId": "S04",
+      "actorRef": "owner",
+      "resourceRef": "shop-settings",
+      "operationRef": "shop.settings.update",
+      "method": "PATCH",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": [],
+      "mutationRef": "shop.owner.edit"
+    },
+    {
+      "testId": "S05",
+      "actorRef": "customer-b",
+      "resourceRef": "shop-settings",
+      "operationRef": "shop.settings.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "S02",
+        "S04"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ],
+      "mutationRef": "shop.denied.edit"
+    }
+  ]
+}

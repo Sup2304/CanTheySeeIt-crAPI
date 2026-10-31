@@ -1,0 +1,34 @@
+{
+  "name": "cantheyseeit-crapi-benchmark",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:sprout": "node --experimental-strip-types tests/sprout-live.mjs",
+    "register:sprout": "node scripts/register-sprout.mjs",
+    "check:crapi": "node scripts/check-crapi-local.mjs",
+    "test:unit": "vitest run tests/verdict.test.ts",
+    "start:crapi": "node --env-file=.env --import tsx src/server.ts",
+    "demo:crapi": "node scripts/run-crapi-baseline.mjs",
+    "test:crapi:mock": "node --experimental-strip-types --test tests/crapi-adapter.test.mjs",
+    "start:universal": "tsx src/api/universalServer.ts"
+  },
+  "dependencies": {
+    "@babel/parser": "^8.0.10",
+    "@babel/traverse": "^8.0.10",
+    "express": "^5.3.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.28.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}

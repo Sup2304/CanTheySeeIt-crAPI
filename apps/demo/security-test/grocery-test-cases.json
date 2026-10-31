@@ -1,0 +1,404 @@
+{
+  "schemaVersion": "1.0",
+  "contractStatus": "PROPOSED_AWAITING_SUPRITA_ARJUN_APPROVAL",
+  "targetProfileId": "local-grocery-v1",
+  "fixtureVersion": "grocery-fixtures-v1",
+  "sourceNote": "Aligned to G01-G12 supplied screenshot, Arjun test/qa fixture proposal and local GoodBasket fixture/API shape. This file describes test intent; it does NOT perform requests or assign real verdicts.",
+  "executionSafety": {
+    "approvedHosts": [
+      "127.0.0.1"
+    ],
+    "allowedMethods": [
+      "GET",
+      "PATCH"
+    ],
+    "allowedPatchPaths": [
+      "/api/addresses/address-a-101",
+      "/api/products/sku-apple-01/inventory"
+    ],
+    "syntheticOnly": true,
+    "explicitSetupConsent": true,
+    "trustedStateReadBackForWrites": true,
+    "resetEveryWrite": true,
+    "neverExposeSessionsToBrowser": true
+  },
+  "actors": {
+    "customer-a": {
+      "role": "customer"
+    },
+    "customer-b": {
+      "role": "customer"
+    },
+    "staff-1": {
+      "role": "inventory_staff"
+    },
+    "anonymous": {
+      "role": "unauthenticated"
+    }
+  },
+  "resources": {
+    "address-a-101": {
+      "type": "address",
+      "ownerUserId": "customer-a",
+      "marker": "ADDRESS_A_TEST_MARKER_7K5N"
+    },
+    "address-b-102": {
+      "type": "address",
+      "ownerUserId": "customer-b",
+      "marker": "ADDRESS_B_TEST_MARKER_P9Q4"
+    },
+    "sku-apple-01": {
+      "type": "product",
+      "initialStockQuantity": 42
+    }
+  },
+  "policies": [
+    "OWNER_ONLY_READ",
+    "OWNER_ONLY_UPDATE",
+    "STAFF_ONLY_INVENTORY_UPDATE"
+  ],
+  "cases": [
+    {
+      "id": "G01",
+      "scenario": "Customer A views their own address",
+      "kind": "HTTP",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "GET",
+        "path": "/api/addresses/address-a-101"
+      },
+      "expectedAccess": "ALLOW",
+      "expectedStatuses": [
+        200
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "exactResourceId",
+        "exactOwner",
+        "expectedPrivateMarker"
+      ],
+      "requiresTrustedBeforeAfter": false,
+      "resetAfter": false
+    },
+    {
+      "id": "G02",
+      "scenario": "Customer B views A's address",
+      "kind": "HTTP",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "GET",
+        "path": "/api/addresses/address-a-101"
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        403
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "ownerBaselineValid",
+        "privateMarkerNotExposed",
+        "recheckActorAfter"
+      ],
+      "requiresTrustedBeforeAfter": false,
+      "resetAfter": false
+    },
+    {
+      "id": "G03",
+      "scenario": "Anonymous user views A's address",
+      "kind": "HTTP",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "GET",
+        "path": "/api/addresses/address-a-101"
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        401
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "noAuthenticationHeader",
+        "ownerBaselineValid",
+        "privateMarkerNotExposed"
+      ],
+      "requiresTrustedBeforeAfter": false,
+      "resetAfter": false
+    },
+    {
+      "id": "G04",
+      "scenario": "Customer A edits their address",
+      "kind": "HTTP",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/addresses/address-a-101",
+        "jsonBody": {
+          "deliveryNote": "CAN_THEY_SEE_IT_SYNTHETIC_UPDATE_G04"
+        }
+      },
+      "expectedAccess": "ALLOW",
+      "expectedStatuses": [
+        200
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "trustedBeforeSnapshot",
+        "exactRequestedFieldChanged",
+        "otherFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G05",
+      "scenario": "Customer B edits A's address",
+      "kind": "HTTP",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/addresses/address-a-101",
+        "jsonBody": {
+          "deliveryNote": "CAN_THEY_SEE_IT_SYNTHETIC_BLOCKED_EDIT"
+        }
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        403
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "allFieldsUnchanged",
+        "recheckActorAfter",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G06",
+      "scenario": "Anonymous user edits A's address",
+      "kind": "HTTP",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/addresses/address-a-101",
+        "jsonBody": {
+          "deliveryNote": "CAN_THEY_SEE_IT_SYNTHETIC_BLOCKED_EDIT"
+        }
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        401
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "noAuthenticationHeader",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "allFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G07",
+      "scenario": "Staff edits product inventory",
+      "kind": "HTTP",
+      "actorRef": "staff-1",
+      "resourceRef": "sku-apple-01",
+      "resourceType": "product",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/products/sku-apple-01/inventory",
+        "jsonBody": {
+          "stockQuantity": 17
+        }
+      },
+      "expectedAccess": "ALLOW",
+      "expectedStatuses": [
+        200
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "staffRoleValid",
+        "trustedBeforeSnapshot",
+        "exactRequestedFieldChanged",
+        "otherFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G08",
+      "scenario": "Customer edits inventory",
+      "kind": "HTTP",
+      "actorRef": "customer-a",
+      "resourceRef": "sku-apple-01",
+      "resourceType": "product",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/products/sku-apple-01/inventory",
+        "jsonBody": {
+          "stockQuantity": 17
+        }
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        403
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "allFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G09",
+      "scenario": "Anonymous user edits inventory",
+      "kind": "HTTP",
+      "actorRef": "anonymous",
+      "resourceRef": "sku-apple-01",
+      "resourceType": "product",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/products/sku-apple-01/inventory",
+        "jsonBody": {
+          "stockQuantity": 17
+        }
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        401
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "noAuthenticationHeader",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "allFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G10",
+      "scenario": "Customer attempts to change an address's ownerUserId",
+      "kind": "HTTP",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/addresses/address-a-101",
+        "jsonBody": {
+          "ownerUserId": "customer-b"
+        }
+      },
+      "expectedAccess": "REJECT",
+      "expectedStatuses": [
+        400
+      ],
+      "expectedVerdictInScenario": "PASS",
+      "assertions": [
+        "validAuthenticatedActor",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "ownerUnchanged",
+        "allFieldsUnchanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true
+    },
+    {
+      "id": "G11",
+      "scenario": "Server denies unauthorized edit but changes data anyway",
+      "kind": "QA_FAULT",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "PATCH",
+        "path": "/api/addresses/address-a-101",
+        "jsonBody": {
+          "deliveryNote": "CAN_THEY_SEE_IT_SYNTHETIC_FAULT_G11"
+        }
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        403
+      ],
+      "expectedVerdictInScenario": "FAIL",
+      "assertions": [
+        "validAuthenticatedActor",
+        "trustedBeforeSnapshot",
+        "trustedAfterSnapshot",
+        "unauthorizedStateChanged",
+        "cleanupVerified"
+      ],
+      "requiresTrustedBeforeAfter": true,
+      "resetAfter": true,
+      "faultPrerequisite": {
+        "mode": "controlled-regressed-backend-only",
+        "explanation": "Requires actual source revision where forbidden write persists despite HTTP 403. Never simulate outcome by changing a UI label; do not run against public apps."
+      }
+    },
+    {
+      "id": "G12",
+      "scenario": "A customer's session expires during verification",
+      "kind": "QA_FAULT",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "resourceType": "address",
+      "request": {
+        "method": "GET",
+        "path": "/api/addresses/address-a-101"
+      },
+      "expectedAccess": "DENY",
+      "expectedStatuses": [
+        401,
+        403
+      ],
+      "expectedVerdictInScenario": "INCONCLUSIVE",
+      "assertions": [
+        "initialIdentityValid",
+        "expireActorAfterPrecheck",
+        "identityRecheckFails",
+        "neverMarkPass"
+      ],
+      "requiresTrustedBeforeAfter": false,
+      "resetAfter": false,
+      "faultPrerequisite": {
+        "mode": "expire-private-session-between-verifier-checks",
+        "explanation": "Use trusted expireSyntheticActor hook after identity precheck, then confirm expired session means inconclusive; no real data affected."
+      }
+    }
+  ]
+}

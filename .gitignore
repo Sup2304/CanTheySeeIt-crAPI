@@ -1,0 +1,24 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+dist/
+coverage/
+.vite/
+.DS_Store
+
+workspace/
+uploads/
+tmp/
+temp/
+
+*.log
+*.backup.txt
+package.backup.json
+package-lock.backup.json
+
+# Additional local and backup files
+.en
+*.backup
+*.backup.*

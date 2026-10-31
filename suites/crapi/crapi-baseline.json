@@ -1,0 +1,39 @@
+{
+  "suiteId": "crapi-phase1-vehicle-baseline-v1",
+  "title": "OWASP crAPI authenticated vehicle list baseline",
+  "originalRequirement": "Each disposable test account must retrieve its independently registered vehicle, while an anonymous caller must not retrieve protected vehicle records. This suite does not assert a cross-user BOLA vulnerability.",
+  "targetProfileId": "crapi-local-benchmark",
+  "confirmed": true,
+  "cases": [
+    {
+      "testId": "C01",
+      "actorRef": "customer-a",
+      "resourceRef": "vehicle-a",
+      "operationRef": "vehicle.list",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "C02",
+      "actorRef": "customer-b",
+      "resourceRef": "vehicle-b",
+      "operationRef": "vehicle.list",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "C03",
+      "actorRef": "anonymous",
+      "resourceRef": "vehicle-a",
+      "operationRef": "vehicle.list",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": ["C01", "C02"],
+      "acceptedDenialStatuses": [401, 403]
+    }
+  ]
+}

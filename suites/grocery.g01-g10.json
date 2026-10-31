@@ -1,0 +1,146 @@
+{
+  "suiteId": "grocery-owner-staff-g01-g10-v2",
+  "title": "GoodBasket customer address ownership and staff-only inventory",
+  "originalRequirement": "Customers can read and edit only their own delivery addresses; only inventory staff may edit stock; ownerUserId cannot be reassigned through the address API. All tests use disposable synthetic fixtures only.",
+  "targetProfileId": "local-grocery-v1",
+  "confirmed": true,
+  "cases": [
+    {
+      "testId": "G01",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "G02",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ]
+    },
+    {
+      "testId": "G03",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [
+        401
+      ]
+    },
+    {
+      "testId": "G04",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "ALLOW",
+      "requiredControls": [
+        "G01"
+      ],
+      "mutationRef": "address.note.own",
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "G05",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "mutationRef": "address.note.cross",
+      "acceptedDenialStatuses": [
+        403
+      ]
+    },
+    {
+      "testId": "G06",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "mutationRef": "address.note.cross",
+      "acceptedDenialStatuses": [
+        401
+      ]
+    },
+    {
+      "testId": "G07",
+      "actorRef": "staff-1",
+      "resourceRef": "sku-apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "mutationRef": "inventory.quantity.17",
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "G08",
+      "actorRef": "customer-a",
+      "resourceRef": "sku-apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G07"
+      ],
+      "mutationRef": "inventory.quantity.17",
+      "acceptedDenialStatuses": [
+        403
+      ]
+    },
+    {
+      "testId": "G09",
+      "actorRef": "anonymous",
+      "resourceRef": "sku-apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G07"
+      ],
+      "mutationRef": "inventory.quantity.17",
+      "acceptedDenialStatuses": [
+        401
+      ]
+    },
+    {
+      "testId": "G10",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "mutationRef": "address.owner.reassign",
+      "acceptedDenialStatuses": [
+        400
+      ]
+    }
+  ]
+}

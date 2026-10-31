@@ -1,0 +1,158 @@
+{
+  "suiteId": "sprout-grocery-g01-g10-v1",
+  "title": "Sprout & Stone controlled address and inventory permissions",
+  "originalRequirement": "Customers may read and edit only their own addresses, only the synthetic shopkeeper may edit inventory, and customers may not reassign address ownership.",
+  "targetProfileId": "sprout-stone-local-grocery-lab",
+  "confirmed": true,
+  "cases": [
+    {
+      "testId": "G01",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "G01B",
+      "actorRef": "customer-b",
+      "resourceRef": "address-b-102",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": []
+    },
+    {
+      "testId": "G02",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01",
+        "G01B"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ]
+    },
+    {
+      "testId": "G03",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.read",
+      "method": "GET",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [
+        401
+      ]
+    },
+    {
+      "testId": "G04",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "ALLOW",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [],
+      "mutationRef": "address.own.note"
+    },
+    {
+      "testId": "G05",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01",
+        "G01B"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ],
+      "mutationRef": "address.denied.note"
+    },
+    {
+      "testId": "G06",
+      "actorRef": "anonymous",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [
+        401
+      ],
+      "mutationRef": "address.denied.note"
+    },
+    {
+      "testId": "G07",
+      "actorRef": "owner",
+      "resourceRef": "apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "ALLOW",
+      "requiredControls": [],
+      "acceptedDenialStatuses": [],
+      "mutationRef": "inventory.quantity"
+    },
+    {
+      "testId": "G08",
+      "actorRef": "customer-a",
+      "resourceRef": "apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G07"
+      ],
+      "acceptedDenialStatuses": [
+        403
+      ],
+      "mutationRef": "inventory.quantity"
+    },
+    {
+      "testId": "G09",
+      "actorRef": "anonymous",
+      "resourceRef": "apple-01",
+      "operationRef": "inventory.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G07"
+      ],
+      "acceptedDenialStatuses": [
+        401
+      ],
+      "mutationRef": "inventory.quantity"
+    },
+    {
+      "testId": "G10",
+      "actorRef": "customer-a",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [
+        "G01"
+      ],
+      "acceptedDenialStatuses": [
+        400
+      ],
+      "mutationRef": "address.owner.reassign"
+    }
+  ]
+}

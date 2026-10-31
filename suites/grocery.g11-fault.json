@@ -1,0 +1,22 @@
+{
+  "suiteId": "grocery-g11-known-regression-v2",
+  "title": "G11 controlled regression: forbidden edit persists despite denial",
+  "originalRequirement": "Customers can read and edit only their own delivery addresses; only inventory staff may edit stock; ownerUserId cannot be reassigned through the address API. All tests use disposable synthetic fixtures only.",
+  "targetProfileId": "local-grocery-v1",
+  "confirmed": true,
+  "cases": [
+    {
+      "testId": "G11",
+      "actorRef": "customer-b",
+      "resourceRef": "address-a-101",
+      "operationRef": "address.update",
+      "method": "PATCH",
+      "expectation": "DENY",
+      "requiredControls": [],
+      "mutationRef": "address.note.fault",
+      "acceptedDenialStatuses": [
+        403
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "manifestNote": "Integration example only. This is an adapter-declared manifest, NOT proof of automatic source scanning or a frozen CanTheySeeIt API contract.",
+  "projectId": "sprout-stone-local-grocery-lab",
+  "displayName": "Sprout & Stone — synthetic grocery shop",
+  "baseUrl": "http://127.0.0.1:4000",
+  "provenance": "adapter-declared",
+  "testOnly": true,
+  "authentication": { "method": "POST /api/auth/token", "type": "bearer", "identityCheck": "GET /api/me", "credentialsSource": "trusted local fixture adapter only" },
+  "identities": { "owner": "owner", "customerA": "customer-a", "customerB": "customer-b" },
+  "fixtures": {
+    "ownerA": { "id": "order-a-1001", "ownerUserId": "customer-a", "privateMarker": "ORDER_A_PRIVATE_71C9" },
+    "ownerB": { "id": "order-b-1002", "ownerUserId": "customer-b", "privateMarker": "ORDER_B_PRIVATE_48D2" },
+    "addressA": { "id": "address-a-101", "ownerUserId": "customer-a" },
+    "addressB": { "id": "address-b-102", "ownerUserId": "customer-b" },
+    "inventoryProduct": "apple-01"
+  },
+  "proposedSecurityPromises": [
+    { "policyType": "OWNER_ONLY_READ", "resourceType": "order", "path": "GET /api/orders/:orderId", "expectedOwnerAccess": 200, "expectedCrossUserAccess": 403 },
+    { "policyType": "SHOPKEEPER_ONLY_EDIT", "resourceType": "shop-settings", "path": "PATCH /api/shop/settings", "expectedOwnerAccess": 200, "expectedCustomerAccess": 403 },
+    { "policyType": "OWNER_ONLY_UPDATE", "resourceType": "delivery-address", "path": "PATCH /api/addresses/:addressId", "expectedCrossUserAccess": 403 },
+    { "policyType": "OWNER_ONLY_INVENTORY_EDIT", "resourceType": "inventory", "path": "PATCH /api/products/:sku/inventory", "expectedCustomerAccess": 403 }
+  ],
+  "cleanup": "POST /api/lab/reset (requires owner token)",
+  "warning": "Policy type names and data shapes may need adapting to the team's actual verifier. Never ship synthetic credentials or private session tokens to browser-facing onboarding responses."
+}

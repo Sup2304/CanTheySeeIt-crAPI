@@ -1,0 +1,202 @@
+{
+  "suites": [
+    {
+      "suiteId": "crapi-phase1-vehicle-baseline-v1",
+      "title": "OWASP crAPI authenticated vehicle list baseline",
+      "originalRequirement": "Each disposable test account must retrieve its independently registered vehicle, while an anonymous caller must not retrieve protected vehicle records. This suite does not assert a cross-user BOLA vulnerability.",
+      "targetProfileId": "crapi-local-benchmark",
+      "confirmed": true,
+      "cases": [
+        {
+          "testId": "C01",
+          "actorRef": "customer-a",
+          "resourceRef": "vehicle-a",
+          "operationRef": "vehicle.list",
+          "method": "GET",
+          "expectation": "ALLOW",
+          "requiredControls": [],
+          "acceptedDenialStatuses": []
+        },
+        {
+          "testId": "C02",
+          "actorRef": "customer-b",
+          "resourceRef": "vehicle-b",
+          "operationRef": "vehicle.list",
+          "method": "GET",
+          "expectation": "ALLOW",
+          "requiredControls": [],
+          "acceptedDenialStatuses": []
+        },
+        {
+          "testId": "C03",
+          "actorRef": "anonymous",
+          "resourceRef": "vehicle-a",
+          "operationRef": "vehicle.list",
+          "method": "GET",
+          "expectation": "DENY",
+          "requiredControls": [
+            "C01",
+            "C02"
+          ],
+          "acceptedDenialStatuses": [
+            401,
+            403
+          ]
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "runId": "c09e15c2-a00a-4ff4-8707-dd48f6d795dc",
+      "suiteId": "crapi-phase1-vehicle-baseline-v1",
+      "contractHash": "bea333ab40e46b9c72cb60f3a90e20dd636bdbaa16356280d1fcfc72156ca3a4",
+      "revisionLabel": "crapi-phase1-baseline",
+      "aggregateVerdict": "INCONCLUSIVE",
+      "results": [
+        {
+          "testId": "C01",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:34:05.583Z"
+        },
+        {
+          "testId": "C02",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:34:05.605Z"
+        },
+        {
+          "testId": "C03",
+          "verdict": "INCONCLUSIVE",
+          "reasonCode": "MALFORMED_JSON",
+          "explanation": "The HTTP response was not reliable.",
+          "observed": {
+            "status": 401,
+            "fixtureMatched": false,
+            "error": "MALFORMED_JSON"
+          },
+          "checkedAt": "2026-10-31T20:34:05.673Z"
+        }
+      ],
+      "executedAt": "2026-10-31T20:34:05.674Z",
+      "haltedAfterCleanupFailure": false,
+      "comparison": null
+    },
+    {
+      "runId": "76f015f9-8bc0-426e-aa0e-eafdb3c80bbc",
+      "suiteId": "crapi-phase1-vehicle-baseline-v1",
+      "contractHash": "bea333ab40e46b9c72cb60f3a90e20dd636bdbaa16356280d1fcfc72156ca3a4",
+      "revisionLabel": "crapi-phase1-baseline",
+      "aggregateVerdict": "INCONCLUSIVE",
+      "results": [
+        {
+          "testId": "C01",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:35:47.191Z"
+        },
+        {
+          "testId": "C02",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:35:47.210Z"
+        },
+        {
+          "testId": "C03",
+          "verdict": "INCONCLUSIVE",
+          "reasonCode": "MALFORMED_JSON",
+          "explanation": "The HTTP response was not reliable.",
+          "observed": {
+            "status": 401,
+            "fixtureMatched": false,
+            "error": "MALFORMED_JSON"
+          },
+          "checkedAt": "2026-10-31T20:35:47.218Z"
+        }
+      ],
+      "executedAt": "2026-10-31T20:35:47.218Z",
+      "haltedAfterCleanupFailure": false,
+      "comparison": {
+        "previousRunId": "c09e15c2-a00a-4ff4-8707-dd48f6d795dc",
+        "aggregateTransition": "INCONCLUSIVE → INCONCLUSIVE",
+        "testTransitions": []
+      }
+    },
+    {
+      "runId": "5470c779-d595-47c8-87ff-950dbf884e89",
+      "suiteId": "crapi-phase1-vehicle-baseline-v1",
+      "contractHash": "bea333ab40e46b9c72cb60f3a90e20dd636bdbaa16356280d1fcfc72156ca3a4",
+      "revisionLabel": "crapi-phase1-baseline",
+      "aggregateVerdict": "PASS",
+      "results": [
+        {
+          "testId": "C01",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:36:40.616Z"
+        },
+        {
+          "testId": "C02",
+          "verdict": "PASS",
+          "reasonCode": "EXPECTED_PRIVATE_FIXTURE",
+          "explanation": "Allowed user retrieved the exact expected synthetic record.",
+          "observed": {
+            "status": 200,
+            "fixtureMatched": true
+          },
+          "checkedAt": "2026-10-31T20:36:40.687Z"
+        },
+        {
+          "testId": "C03",
+          "verdict": "PASS",
+          "reasonCode": "ACCESS_DENIED_AS_CONFIGURED",
+          "explanation": "Forbidden actor was denied under the confirmed policy with valid controls.",
+          "observed": {
+            "status": 401,
+            "fixtureMatched": false
+          },
+          "checkedAt": "2026-10-31T20:36:40.696Z"
+        }
+      ],
+      "executedAt": "2026-10-31T20:36:40.697Z",
+      "haltedAfterCleanupFailure": false,
+      "comparison": {
+        "previousRunId": "76f015f9-8bc0-426e-aa0e-eafdb3c80bbc",
+        "aggregateTransition": "INCONCLUSIVE → PASS",
+        "testTransitions": [
+          {
+            "testId": "C03",
+            "from": "INCONCLUSIVE",
+            "to": "PASS"
+          }
+        ]
+      }
+    }
+  ]
+}
